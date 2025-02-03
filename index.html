@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botones Interactivos</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            margin: 50px;
+            background-color: #f3f3f3;
+            overflow: hidden; /* Para evitar que el confeti se desborde fuera de la pantalla */
+        }
+        h1 {
+            font-size: 40px;
+            color: #ff3366;
+            background: linear-gradient(to left, #ff66cc, #9b59b6);
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px #ff66cc, 2px 2px 10px #9b59b6;
+        }
+        img {
+            width: 300px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            transition: all 2s ease;
+        }
+        button {
+            font-size: 20px;
+            margin: 10px;
+            padding: 15px 30px;
+            cursor: pointer;
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+        #btnNo {
+            background-color: #ff66cc;
+            color: white;
+        }
+        #btnSi {
+            background-color: #9b59b6;
+            color: white;
+        }
+        button:hover {
+            transform: scale(1.1);
+        }
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .confetti div {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff3366;
+            animation: confetti 3s infinite;
+        }
+        @keyframes confetti {
+            0% {
+                transform: translateY(0) rotate(0);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+        .lights {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.3);
+            animation: lightsEffect 1s infinite alternate;
+        }
+        @keyframes lightsEffect {
+            0% { background-color: rgba(255, 255, 255, 0.3); }
+            50% { background-color: rgba(255, 255, 255, 0.7); }
+            100% { background-color: rgba(255, 255, 255, 0.3); }
+        }
+
+        /* Animación para hacer que la imagen gire */
+        @keyframes girar {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Hacer que la imagen gire cuando se presiona el botón */
+        .giro {
+            animation: girar 2s ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Texto inicial -->
+    <h1>¿Quieres ser mi duo?</h1>
+
+    <!-- Imagen debajo de la pregunta -->
+    <img id="imagen" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGJtaqxSn50DeF18lcMITEeGYfET5Z3-kEBEICmvStRDWVTHKojdgMxmOm&s=10" alt="Imagen divertida">
+
+    <!-- Botones -->
+    <button id="btnSi" onclick="responder('¡Está bien! 😄')">¡Está bien! 😄</button>
+    <button id="btnNo" onclick="reducir()">Nooo... 😭</button>
+
+    <script>
+        let clicks = 0;
+        let frasesNo = [
+            "¿Estás segura que no?", 
+            "Deja de presionar", 
+            "Ya es suficiente, acepta", 
+            "Karimeee", 
+            "¡Ola jaja!", 
+            "Ya acepta o lloro"
+        ];
+
+        function reducir() {
+            clicks++;
+            let btnNo = document.getElementById("btnNo");
+            let btnSi = document.getElementById("btnSi");
+
+            // Cambiar texto del botón "No"
+            btnNo.innerText = frasesNo[clicks % frasesNo.length]; 
+
+            // Reducir el tamaño del botón "No"
+            let newSize = 16 - clicks * 2;
+            btnNo.style.fontSize = newSize + "px";
+            btnNo.style.padding = (10 - clicks) + "px " + (20 - clicks * 1.5) + "px";
+
+            // Aumentar el tamaño del botón "Está bien"
+            let increaseSize = 16 + clicks * 3;
+            btnSi.style.fontSize = increaseSize + "px";
+            btnSi.style.padding = (10 + clicks) + "px " + (20 + clicks * 1.5) + "px";
+
+            // Desaparece después de 8 clics
+            if (clicks >= 8) {
+                btnNo.style.display = "none";
+            }
+        }
+
+        function responder(mensaje) {
+            alert("Seleccionaste: " + mensaje);
+
+            // Mostrar la frase de "Felicidades"
+            document.querySelector('h1').innerText = "Felicidades, ¡ya eres oficialmente main Angela! 🎉";
+
+            // Cambiar la imagen y darle la animación de girar
+            const imagen = document.getElementById("imagen");
+            imagen.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXCTS8dCThTtmq-7cugz_5tMjNR5lSIfE3CBcCsecan9VPTF1GpLKKTrCF&s=10";
+            imagen.classList.add("giro");
+
+            // Mostrar efectos de confeti y luces
+            crearConfetti();
+            activarLuces();
+        }
+
+        function crearConfetti() {
+            const confettiContainer = document.createElement('div');
+            confettiContainer.classList.add('confetti');
+            document.body.appendChild(confettiContainer);
+
+            for (let i = 0; i < 100; i++) {
+                const confettiPiece = document.createElement('div');
+                confettiPiece.style.left = `${Math.random() * 100}%`;
+                confettiPiece.style.animationDuration = `${Math.random() * 2 + 2}s`;
+                confettiPiece.style.animationDelay = `${Math.random() * 2}s`;
+                confettiPiece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confettiContainer.appendChild(confettiPiece);
+            }
+        }
+
+        function activarLuces() {
+            const lightsEffect = document.createElement('div');
+            lightsEffect.classList.add('lights');
+            document.body.appendChild(lightsEffect);
+        }
+    </script>
+
+</body>
+</html>
